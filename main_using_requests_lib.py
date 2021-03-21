@@ -1,5 +1,6 @@
 import json
 import requests
+import argparse
 from requests.exceptions import HTTPError
 
 
@@ -22,12 +23,23 @@ def wikipedia_search(word, limit):
 
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')
+    except KeyError as e:
+        print(f'KeyError occurred: {e}. Check if you entered all input data correctly (str, int).')
     except Exception as err:
         print(f'Other error occurred: {err}')
 
-    dict = {"result": "Nothing was added!"}
+    dict = {"result": "Something went wrong! Exception occurred! Try [-h] or [--help] for help."}
     return dict
 
 
-data = wikipedia_search("car", 5)
-print('data:', data)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process two parameters (str, int)')
+    parser.add_argument('--word', type=str,
+                        help='Input word (type=str) which topic of wikipedia page should contain')
+    parser.add_argument('--limit', type=int,
+                        help='Input items limit (type=int) in output dictionary')
+
+    args = parser.parse_args()
+    data = wikipedia_search(args.word, args.limit)
+
+    print('data:', data)
