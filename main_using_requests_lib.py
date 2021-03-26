@@ -2,13 +2,22 @@ import json
 import requests
 import argparse
 from requests.exceptions import HTTPError
+import logging
+
+# logging level set to INFO
+logging.basicConfig(format='%(message)s',
+                    level=logging.INFO)
+
+LOG = logging.getLogger(__name__)
 
 
 def wikipedia_search(word, limit):
-    print(f'The word is: {word}, and limit: {limit}')
+    LOG.info(f'--- entered word is: {word}')
+    LOG.info(f'--- entered limit is: {limit}')
     try:
         response = requests.get(
             f'https://en.wikipedia.org/w/api.php?action=opensearch&search={word}&limit={limit}&namespace=0&format=json')
+        assert response.status_code == 200, f'Status_code should be 200 but it is {response.status_code}!'
 
         resp = response.json()
         topic_list = resp[1]
@@ -38,4 +47,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     data = wikipedia_search(args.word, args.limit)
 
-    print('data:', data)
+    LOG.info(f'--- data: {data}')
